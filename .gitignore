@@ -1,0 +1,29 @@
+# Secrets and local overrides: never commit these.
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# dbt build output
+target/
+logs/
+dbt_packages/
+
+# The practice data and the warehouse files are generated (make data, make load): never commit them.
+data/
+*.duckdb
+*.duckdb.wal
+state/
+
+# The check kit the Review page gives you
+.projlabs/
+
+# OS junk
+.DS_Store
+Thumbs.db

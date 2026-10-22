@@ -1,0 +1,12 @@
+# The lab's dbt (PostgreSQL), plus the DuckDB adapter the ci target uses, the SQL linter and the test tools.
+# No dbt packages: this project writes its own macros (no dbt_utils), so `dbt deps` is never needed.
+dbt-core==1.12.5
+dbt-postgres==1.11.0
+dbt-duckdb==1.11.0
+duckdb==1.5.6
+psycopg[binary]==3.3.6
+pyyaml==6.0.3
+pytest==9.1.1
+ruff==0.16.10
+sqlfluff==4.3.0
+sqlfluff-templater-dbt==4.3.0

@@ -1,0 +1,32 @@
+# SQLFluff renders the models with dbt on the ci target (DuckDB): load batch 1 into it first (make load BATCH=1
+# TARGET=ci), because coalesce_columns asks the database which columns a source has.
+[sqlfluff]
+templater = dbt
+dialect = duckdb
+# 140: dbt.datediff renders long lines on DuckDB.
+max_line_length = 140
+# Style choices of this project: joins name the joined table's columns first, several select targets may share a
+# line in a CTE, and select * is fine in an import CTE.
+exclude_rules = structure.column_order, ambiguous.column_count, references.qualification, structure.join_condition_order, layout.select_targets
+large_file_skip_byte_limit = 0
+
+[sqlfluff:indentation]
+indented_on_contents = false
+template_blocks_indent = false
+
+[sqlfluff:templater:dbt]
+project_dir = .
+profiles_dir = .
+target = ci
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.literals]
+capitalisation_policy = lower

@@ -1,0 +1,6 @@
+# The rules the Python in this project is checked with: real errors and unused or undefined names.
+line-length = 160
+target-version = "py312"
+
+[lint]
+select = ["E4", "E7", "E9", "F"]

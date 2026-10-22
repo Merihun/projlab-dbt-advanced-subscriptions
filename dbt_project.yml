@@ -1,0 +1,19 @@
+name: fernhill_subs
+version: "1.0.0"
+profile: fernhill_subs
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+clean-targets: ["target", "dbt_packages"]
+
+flags:
+  send_anonymous_usage_stats: false
+
+# TODO (step 1): require-dbt-version, a query-comment, and the folder configuration under models: (materialized,
+# schema, group, access per folder), seeds: and snapshots:.
+# TODO (step 3): vars (mrr_start_month).
+# TODO (step 9): on-run-start, on-run-end, and the marts' post-hook.

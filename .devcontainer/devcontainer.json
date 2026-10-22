@@ -1,0 +1,49 @@
+{
+  "name": "ProjLab: Analytics Engineering",
+  "dockerComposeFile": "../compose.yaml",
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "innoverio.vscode-dbt-power-user",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": [
+          "tests"
+        ]
+      }
+    }
+  },
+  "forwardPorts": [
+    8081,
+    8080
+  ],
+  "portsAttributes": {
+    "8081": {
+      "label": "dbt docs",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Airflow (optional)",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  }
+}

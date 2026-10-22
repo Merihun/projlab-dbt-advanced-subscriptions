@@ -1,0 +1,8 @@
+# Why each layer is materialised the way it is (step 9). One line per layer:
+# layer = materialisation | why, in a sentence or two
+staging =
+intermediate =
+int_months =
+marts =
+fct_app_events =
+fct_daily_engagement =

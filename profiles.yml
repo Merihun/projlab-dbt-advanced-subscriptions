@@ -1,0 +1,17 @@
+# One project, three targets (step 1). dev is ready: the lab's PostgreSQL, with the credentials compose.yaml
+# puts in the workspace's environment.
+fernhill_subs:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5432') | as_number }}"
+      user: "{{ env_var('POSTGRES_USER') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      dbname: "{{ env_var('POSTGRES_DB') }}"
+      schema: dbt_dev
+      threads: 4
+    # TODO (step 1): prod, the same warehouse with the schema analytics.
+    # TODO (step 1): ci, type duckdb, path and schema from DBT_DUCKDB_PATH and DBT_CI_SCHEMA (defaults
+    # fernhill.duckdb and ci).

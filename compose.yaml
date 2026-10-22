@@ -1,0 +1,95 @@
+# ProjLab: Analytics Engineering, for "Subscription Revenue Platform: Advanced dbt at Scale".
+# The dbt project is this folder (DBT_PROJECT_DIR and DBT_PROFILES_DIR are /workspace); the ci target is
+# the DuckDB file DBT_DUCKDB_PATH.
+# Used by the dev container (.devcontainer/devcontainer.json) AND by plain `docker compose up`.
+# Credentials are local-only development defaults; override them in .env (never commit .env).
+#
+# Airflow is optional and does not start by default. Enable it with
+#   docker compose --profile airflow up -d      (or set COMPOSE_PROFILES=airflow in .env)
+name: projlab-analytics-engineering
+
+services:
+  workspace:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    init: true
+    user: vscode
+    working_dir: /workspace
+    # Keeps the container running; work in it through VS Code or `docker compose exec workspace bash`.
+    command: ["sleep", "infinity"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DBT_PROFILES_DIR: /workspace
+      DBT_PROJECT_DIR: /workspace
+      DBT_DUCKDB_PATH: /workspace/fernhill.duckdb
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-projlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projlab}
+      POSTGRES_DB: ${POSTGRES_DB:-projlab}
+      AIRFLOW_URL: http://airflow:8080
+    volumes:
+      - .:/workspace:cached
+    ports:
+      # For `dbt docs serve --host 0.0.0.0 --port 8081`
+      - "127.0.0.1:${DBT_DOCS_PORT:-8081}:8081"
+    networks: [lab]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16.15-bookworm
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-projlab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projlab}
+      POSTGRES_DB: ${POSTGRES_DB:-projlab}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks: [lab]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    # Not published to your machine. To use a desktop SQL client, uncomment (binds to localhost only):
+    # ports:
+    #   - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+
+  airflow:
+    image: apache/airflow:slim-3.3.2-python3.12
+    profiles: [airflow]
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      # Local-only convenience: everyone who can reach the UI is an admin, so there is no login.
+      # The UI is bound to 127.0.0.1 (and is private in Codespaces); do not expose it publicly.
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      # Keep memory modest.
+      AIRFLOW__CORE__PARALLELISM: "4"
+      AIRFLOW__API__WORKERS: "1"
+      AIRFLOW__DAG_PROCESSOR__REFRESH_INTERVAL: "30"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags:ro
+    ports:
+      - "127.0.0.1:${AIRFLOW_PORT:-8080}:8080"
+    networks: [lab]
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/v2/monitor/health')"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+volumes:
+  postgres-data:
+
+networks:
+  lab:

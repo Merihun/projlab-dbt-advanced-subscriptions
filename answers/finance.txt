@@ -1,0 +1,10 @@
+# Finance's questions, answered from your marts after both batches (step 6). One answer per line, key = value.
+# Amounts in GBP with two decimals (no thousands separator), rates with four decimals.
+# Churned MRR is the MRR lost, written as a positive amount (the churn movements sum to a negative number).
+mrr_gbp_2026_06 =
+paying_customers_2026_06 =
+new_mrr_gbp_2026_05 =
+expansion_mrr_gbp_2026_05 =
+churned_mrr_gbp_2026_05 =
+retention_rate_2025_10_cohort_month_6 =
+recognised_revenue_gbp_2026_06 =
