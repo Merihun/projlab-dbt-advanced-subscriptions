@@ -56,7 +56,7 @@ dbt itself runs as `dbt ...` in the workspace; `profiles.yml` and `dbt_project.y
 |--------|-----------|-----------------------------|
 | `dev` | PostgreSQL, schema `dbt_dev` | `dbt_dev_staging`, `dbt_dev_intermediate`, `dbt_dev_finance`, `dbt_dev_product`, `dbt_dev_metrics`, `dbt_dev_reference`, `dbt_dev_snapshots`, `dbt_dev_audit` |
 | `prod` | PostgreSQL, schema `analytics` | `staging`, `intermediate`, `finance`, `product`, `metrics`, `reference`, `snapshots`, `audit` |
-| `ci` | DuckDB file `DBT_DUCKDB_PATH` (default `fernhill.duckdb`), schema `DBT_CI_SCHEMA` (default `ci`) | `ci_staging`, `ci_finance`, ... and, for a pull request built with `DBT_CI_SCHEMA=pr`, `pr_finance`, ... |
+| `ci` | DuckDB file `DBT_DUCKDB_PATH` (default `fernhill.duckdb`), schema `DBT_CI_SCHEMA` (default `ci`) | `ci_staging`, `ci_finance`, ... and, for a pull request built with `DBT_CI_SCHEMA=pr_42` (`dbt-ci.yml` uses the pull request's number, `make slim` uses `pr_local`), `pr_42_finance`, ... |
 
 `dev` and `prod` read the same `raw` schema. Credentials come from the environment (`POSTGRES_HOST`,
 `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`); `compose.yaml` sets them in the workspace.

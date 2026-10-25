@@ -9,6 +9,8 @@ PYTHON ?= python
 DBT ?= dbt
 TARGET ?= dev
 BATCH ?= 1
+# The pull request whose build `make slim` imitates. dbt-ci.yml uses the real number (pr_42_finance for #42).
+PR ?= local
 
 data:  ## (re)write data/batch_1/, data/batch_2/ and the two seeds, always the same bytes
 	$(PYTHON) -m fernhill_subs generate
@@ -42,8 +44,8 @@ ci-state:  ## step 10: build ci from nothing and keep its manifest in state/ (pr
 	$(MAKE) build-ci
 	mkdir -p state && cp target/manifest.json state/manifest.json
 
-slim:  ## step 10: build what changed since state/, and its children, into the pr schemas
-	DBT_CI_SCHEMA=pr $(DBT) build --target ci --selector slim_ci --defer --state state
+slim:  ## step 10: build what changed since state/, and its children, into pr_$(PR)_* (make slim PR=42)
+	DBT_CI_SCHEMA=pr_$(PR) $(DBT) build --target ci --selector slim_ci --defer --state state
 
 lint:  ## SQLFluff on the models (dbt templater, ci target) and ruff on the Python
 	$(PYTHON) -m sqlfluff lint models
